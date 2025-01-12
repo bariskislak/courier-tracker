@@ -17,16 +17,17 @@ storage. It is structured to provide a robust, scalable, and efficient system.
 
 ## Technologies Used
 
-- **Java 21** 
+- **Java 21**
 - **Spring Framework Version 3.4.1**
-   - Spring MVC
-   - Spring Data JPA
+    - Spring MVC
+    - Spring Data JPA
 - **Jakarta EE**
 - **SQL** (e.g., PostGis)
 - **Redis**
 - **Docker** (Docker Compose for orchestration)
 - **Lombok** (to reduce boilerplate code)
-- **Swagger** 
+- **Swagger**
+
 ---
 
 ## Quickstart Guide
@@ -67,7 +68,7 @@ Ensure the following tools and dependencies are installed on your system:
 #### Without Docker
 
 1. Make sure your SQL database and Redis server are running locally.
-2. Configure your `application.yml` file with the appropriate database and Redis connection details.
+2. Create and configure your `.env` file with the appropriate environment variables.
 3. Run the application:
 
    ```bash
@@ -78,7 +79,8 @@ Ensure the following tools and dependencies are installed on your system:
 
 ## Configuration
 
-The following environment variables can be configured for customized settings:
+The following environment variables can be configured in the `.env` file for customized settings:
+[.env--localexample](.env--localexample) can guide you well.
 
 | Variable      | Description                 | Default Value                      |
 |---------------|-----------------------------|------------------------------------|
@@ -88,14 +90,15 @@ The following environment variables can be configured for customized settings:
 | `REDIS_HOST`  | Redis server hostname       | `localhost`                        |
 | `REDIS_PORT`  | Redis server port           | `6379`                             |
 
-These values can be updated in the `.env` file (used by Docker Compose) or directly in the `application.properties`.
+Make sure the `.env` file is in the root of your project directory, and the application will load these values during
+runtime.
 
 ---
 
 ## Testing the Application
 
 1. Use **Postman** or **cURL** to interact with the RESTful API endpoints provided by the backend.
-2. Also you can use http://localhost:8080/swagger-ui/index.html after successfully run the application on your local
+2. Also you can use http://localhost:8080/swagger-ui/index.html after successfully running the application on your local
 3. Automated tests can be run using:
 
    ```bash
