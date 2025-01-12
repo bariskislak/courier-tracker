@@ -1,10 +1,12 @@
 package com.migros.courier_tracker.service;
 
-import com.migros.courier_tracker.service.dto.LocationDto;
+import com.migros.courier_tracker.service.dto.LocationDTO;
+
+import java.io.IOException;
 
 public interface CourierService {
 
-    void updateCourierLocation(Long id, LocationDto locationDto);
+    void updateCourierLocation(Long id, LocationDTO locationDto) throws IOException;
 
     double getTotalDistance(Long id);
 }

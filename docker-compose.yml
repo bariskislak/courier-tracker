@@ -1,0 +1,24 @@
+services:
+  courier-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://courier-postgis:5432/migros_db
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - postgis
+
+  postgis:
+    image: postgis/postgis
+    environment:
+      POSTGRES_DB: migros_db
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    container_name: postgis

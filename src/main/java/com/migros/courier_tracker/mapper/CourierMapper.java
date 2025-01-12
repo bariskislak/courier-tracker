@@ -1,13 +1,11 @@
 package com.migros.courier_tracker.mapper;
 
-import com.migros.courier_tracker.controller.request.LocationRequest;
-import com.migros.courier_tracker.service.dto.LocationDto;
+import com.migros.courier_tracker.controller.request.CourierLocationRequest;
+import com.migros.courier_tracker.service.dto.LocationDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CourierMapper {
 
-    @Mapping(target = "id", ignore = true)
-    LocationDto toCourier(LocationRequest courierRequest);
+    LocationDTO toDTO(CourierLocationRequest courierRequest);
 }
