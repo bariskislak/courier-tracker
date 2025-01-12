@@ -4,6 +4,7 @@ import com.migros.courier_tracker.config.AppConfig;
 import com.migros.courier_tracker.entity.dao.CourierLocation;
 import com.migros.courier_tracker.entity.repository.CourierLocationRepository;
 import com.migros.courier_tracker.exception.ResourceNotFoundException;
+import com.migros.courier_tracker.service.cache.CourierCacheService;
 import com.migros.courier_tracker.service.dto.LocationDTO;
 import com.migros.courier_tracker.service.observer.subject.CourierLocationSubject;
 import com.migros.courier_tracker.service.strategy.DistanceCalculatorStrategy;
@@ -41,6 +42,8 @@ class CourierServiceImplTest {
     @Mock
     private CourierLocationSubject courierLocationSubject;
     @Mock
+    private CourierCacheService courierCacheService;
+    @Mock
     private AppConfig appConfig;
     @Mock
     private DistanceCalculatorStrategy distanceCalculatorStrategy;
@@ -62,6 +65,7 @@ class CourierServiceImplTest {
 
         when(courierLocationRepository.findByCourierIdOrderByAtTimeAsc(courierId))
                 .thenReturn(Collections.emptyList());
+        when(courierCacheService.getTotalDistance(courierId)).thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class, () -> courierService.getTotalDistance(courierId));
 
@@ -80,6 +84,7 @@ class CourierServiceImplTest {
 
         when(courierLocationRepository.findByCourierIdOrderByAtTimeAsc(courierId))
                 .thenReturn(Collections.singletonList(courierLocation));
+        when(courierCacheService.getTotalDistance(courierId)).thenReturn(null);
 
         double result = courierService.getTotalDistance(courierId);
 
@@ -105,6 +110,7 @@ class CourierServiceImplTest {
 
         when(courierLocationRepository.findByCourierIdOrderByAtTimeAsc(1L)).thenReturn(List.of(location1, location2));
         when(distanceCalculatorStrategy.calculateDistance(any(Point.class), any(Point.class))).thenReturn(1000.0);
+        when(courierCacheService.getTotalDistance(1L)).thenReturn(null);
 
         double totalDistance = courierService.getTotalDistance(1L);
 
@@ -127,20 +133,20 @@ class CourierServiceImplTest {
         verify(courierLocationSubject).notifyObservers(any(Long.class), any(Point.class));
     }
 
-        @Test
-        void updateCourierLocation_ShouldThrowException_WhenIOExceptionOccurs () throws IOException {
-            Long courierId = 1L;
-            LocationDTO locationDTO = new LocationDTO();
-            locationDTO.setLongitude(29.0);
-            locationDTO.setLatitude(41.0);
-            locationDTO.setAtTime(LocalDateTime.now());
+    @Test
+    void updateCourierLocation_ShouldThrowException_WhenIOExceptionOccurs() throws IOException {
+        Long courierId = 1L;
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLongitude(29.0);
+        locationDTO.setLatitude(41.0);
+        locationDTO.setAtTime(LocalDateTime.now());
 
-            doThrow(IOException.class).when(courierLocationSubject).notifyObservers(anyLong(), any(Point.class));
+        doThrow(IOException.class).when(courierLocationSubject).notifyObservers(anyLong(), any(Point.class));
 
-            assertThrows(IOException.class, () -> courierService.updateCourierLocation(courierId, locationDTO));
+        assertThrows(IOException.class, () -> courierService.updateCourierLocation(courierId, locationDTO));
 
-            verify(courierLocationRepository, times(1)).save(any(CourierLocation.class));
-            verify(courierLocationSubject, times(1)).notifyObservers(anyLong(), any(Point.class));
-        }
-
+        verify(courierLocationRepository, times(1)).save(any(CourierLocation.class));
+        verify(courierLocationSubject, times(1)).notifyObservers(anyLong(), any(Point.class));
     }
+
+}

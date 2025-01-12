@@ -4,7 +4,7 @@ import com.migros.courier_tracker.service.strategy.DistanceCalculatorStrategy;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 
-@Component( "heversineDistanceCalculator")
+@Component("heversineDistanceCalculator")
 public class HeversineDistanceCalculatorStrategy implements DistanceCalculatorStrategy {
     private static final double EARTH_RADIUS_KM = 6371.0;
 

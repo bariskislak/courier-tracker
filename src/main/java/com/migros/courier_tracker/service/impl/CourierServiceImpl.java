@@ -3,7 +3,9 @@ package com.migros.courier_tracker.service.impl;
 import com.migros.courier_tracker.config.AppConfig;
 import com.migros.courier_tracker.entity.dao.CourierLocation;
 import com.migros.courier_tracker.entity.repository.CourierLocationRepository;
+import com.migros.courier_tracker.exception.ResourceNotFoundException;
 import com.migros.courier_tracker.service.CourierService;
+import com.migros.courier_tracker.service.cache.CourierCacheService;
 import com.migros.courier_tracker.service.dto.LocationDTO;
 import com.migros.courier_tracker.service.observer.subject.CourierLocationSubject;
 import com.migros.courier_tracker.service.strategy.DistanceCalculatorStrategy;
@@ -13,7 +15,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
-import com.migros.courier_tracker.exception.ResourceNotFoundException;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,7 @@ public class CourierServiceImpl implements CourierService {
 
     private final CourierLocationRepository courierLocationRepository;
     private final CourierLocationSubject courierLocationSubject;
+    private final CourierCacheService courierCacheService;
     private final GeometryFactory geometryFactory = new GeometryFactory();
     private final AppConfig appConfig;
     private DistanceCalculatorStrategy distanceStrategy;
@@ -51,7 +53,15 @@ public class CourierServiceImpl implements CourierService {
 
 
     @Override
-    public double getTotalDistance(Long id) {
+    public Double getTotalDistance(Long id) {
+        Double cachedDistance = courierCacheService.getTotalDistance(id);
+        if (cachedDistance == null) {
+            cachedDistance = calculateTotalDistance(id);
+        }
+        return cachedDistance;
+    }
+
+    private Double calculateTotalDistance(Long id) {
         List<CourierLocation> locations = courierLocationRepository.findByCourierIdOrderByAtTimeAsc(id);
 
         if (locations.isEmpty()) {
@@ -62,13 +72,15 @@ public class CourierServiceImpl implements CourierService {
             return 0.0; // Not enough locations to calculate the distance
         }
 
-        return IntStream.range(1, locations.size())
+        double totalDistance = IntStream.range(1, locations.size())
                 .mapToDouble(i -> {
                     Point currentLocation = locations.get(i).getLocation();
                     Point previousLocation = locations.get(i - 1).getLocation();
                     return distanceStrategy.calculateDistance(currentLocation, previousLocation); // Distance in meters
                 })
                 .sum();
+        courierCacheService.setTotalDistance(id, totalDistance);
+        return totalDistance;
     }
 
 }

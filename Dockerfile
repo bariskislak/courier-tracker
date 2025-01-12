@@ -5,9 +5,10 @@ FROM maven:3.9.4-eclipse-temurin AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
+COPY wait-for-it.sh /usr/local/bin/
 
 # Maven ile uygulamayı build et
-RUN mvn clean package -DskipTests
+RUN chmod +x /usr/local/bin/wait-for-it.sh && mvn clean package -DskipTests
 
 # Run aşaması
 FROM amazoncorretto:21
@@ -17,6 +18,7 @@ WORKDIR /app
 
 # Build aşamasında üretilen jar dosyasını kopyala
 COPY --from=build /app/target/courier-tracker-*.jar app.jar
+COPY --from=build /usr/local/bin/wait-for-it.sh /usr/local/bin/
 
 # Uygulamayı başlat
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["/usr/local/bin/wait-for-it.sh", "postgres:5432", "--", "java", "-jar", "/app/app.jar"]

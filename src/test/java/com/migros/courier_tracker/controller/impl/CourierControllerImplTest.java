@@ -31,7 +31,7 @@ class CourierControllerImplTest {
 
     @MockitoBean
     private CourierService courierService;
-    
+
     @MockitoBean
     private CourierMapper courierMapper;
 

@@ -8,5 +8,5 @@ public interface CourierService {
 
     void updateCourierLocation(Long id, LocationDTO locationDto) throws IOException;
 
-    double getTotalDistance(Long id);
+    Double getTotalDistance(Long id);
 }

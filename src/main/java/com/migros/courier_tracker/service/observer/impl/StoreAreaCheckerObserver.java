@@ -2,6 +2,7 @@ package com.migros.courier_tracker.service.observer.impl;
 
 import com.migros.courier_tracker.config.AppConfig;
 import com.migros.courier_tracker.config.StoreConfig;
+import com.migros.courier_tracker.service.cache.CourierCacheService;
 import com.migros.courier_tracker.service.observer.CourierObserver;
 import com.migros.courier_tracker.service.strategy.DistanceCalculatorStrategy;
 import jakarta.annotation.PostConstruct;
@@ -16,6 +17,7 @@ import java.io.IOException;
 public class StoreAreaCheckerObserver implements CourierObserver {
     private final StoreConfig storeConfig;
     private final AppConfig appConfig;
+    private final CourierCacheService courierCacheService;
     private DistanceCalculatorStrategy distanceCalculationStrategy;
 
     @PostConstruct
@@ -27,8 +29,9 @@ public class StoreAreaCheckerObserver implements CourierObserver {
     public void onCourierLocationUpdate(Long courierId, Point location) throws IOException {
         storeConfig.storeList().forEach(store -> {
             double distance = distanceCalculationStrategy.calculateDistance(location, store.getLocation());
-            if (distance < 100) {
+            if (distance < 100 && courierCacheService.isCourierLoggable(courierId, store.getName())) {
                 System.out.println("Courier " + courierId + " is within 100m of store: " + store.getName());
+                courierCacheService.setCourierLogLock(courierId, store.getName());
             }
         });
     }
