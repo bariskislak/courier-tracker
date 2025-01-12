@@ -67,7 +67,7 @@ Ensure the following tools and dependencies are installed on your system:
 #### Without Docker
 
 1. Make sure your SQL database and Redis server are running locally.
-2. Configure your `application.properties` file with the appropriate database and Redis connection details.
+2. Configure your `application.yml` file with the appropriate database and Redis connection details.
 3. Run the application:
 
    ```bash

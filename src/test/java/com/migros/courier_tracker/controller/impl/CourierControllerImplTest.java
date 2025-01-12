@@ -47,7 +47,7 @@ class CourierControllerImplTest {
         request.setLatitude(40.99233);
         request.setLongitude(29.12442);
 
-        mockMvc.perform(post("/api/courier/1/location")
+        mockMvc.perform(post("/api/v1/courier/1/location")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
@@ -66,7 +66,7 @@ class CourierControllerImplTest {
         request.setLatitude(40.99233);
         request.setLongitude(29.12442);
 
-        mockMvc.perform(post("/api/courier/1/location")
+        mockMvc.perform(post("/api/v1/courier/1/location")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isInternalServerError());
@@ -76,7 +76,7 @@ class CourierControllerImplTest {
     void getTotalDistance_success() throws Exception {
         when(courierService.getTotalDistance(1L)).thenReturn(12.34);
 
-        mockMvc.perform(get("/api/courier/1/total-distance")
+        mockMvc.perform(get("/api/v1/courier/1/total-distance")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

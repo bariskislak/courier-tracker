@@ -24,7 +24,6 @@ public class CourierControllerImpl implements CourierController {
 
     @Override
     public ResponseEntity<Double> getTotalDistance(Long id) {
-        // TODO: after total distance calculation can be store at cache if any data update
         return ResponseEntity.ok(courierService.getTotalDistance(id));
     }
 }

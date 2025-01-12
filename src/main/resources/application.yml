@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/migros_db
-    username: sa
-    password: pass
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:pass}
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG10Dialect
@@ -16,8 +16,8 @@ spring:
         dialect: org.hibernate.spatial.dialect.postgis.PostgisPG10Dialect
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 server:
   port: 8080

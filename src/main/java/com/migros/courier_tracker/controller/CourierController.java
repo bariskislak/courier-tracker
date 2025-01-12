@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/courier")
+@RequestMapping("/api/v1/courier")
 public interface CourierController {
 
     @PostMapping("/{id}/location")
